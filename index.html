@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>IRON MACROS // TACTICAL NUTRITION TRACKER</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;600;800&display=swap');
+    body {
+      font-family: 'Chakra Petch', sans-serif;
+      background-color: #09090b;
+      color: #fafafa;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-orange-500 selection:text-black">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-7 bg-orange-500 skew-x-[-12deg]"></div>
+        <h1 class="text-xl font-bold tracking-wider uppercase text-zinc-100">
+          IRON <span class="text-orange-500">MACROS</span>
+        </h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="headerTdeeBadge" class="text-xs mono px-2.5 py-1 bg-zinc-800 border border-zinc-700 rounded text-orange-400 font-semibold">
+          TDEE: -- KCAL
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- NAVIGATION TABS -->
+    <nav class="grid grid-cols-4 gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-bold uppercase tracking-wider">
+      <button onclick="switchTab('log')" id="tab-log" class="tab-btn py-2.5 rounded bg-orange-500 text-black font-extrabold transition">
+        Log Fuel
+      </button>
+      <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
+        Daily Intel
+      </button>
+      <button onclick="switchTab('weekly')" id="tab-weekly" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
+        Weekly Intel
+      </button>
+      <button onclick="switchTab('profile')" id="tab-profile" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
+        Biometrics
+      </button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: FUEL LOGGING (FOOD & WEIGH-IN) -->
+    <!-- ========================================== -->
+    <section id="view-log" class="tab-view space-y-6">
+      
+      <!-- QUICK WEIGH-IN CARD -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+            <i class="fa-solid fa-weight-scale text-orange-500"></i> Daily Mass Check-In
+          </h2>
+          <span id="currentDateLabel" class="text-xs mono text-zinc-500"></span>
+        </div>
+        <div class="flex gap-2">
+          <div class="relative flex-1">
+            <input type="number" step="0.1" id="dailyWeightInput" placeholder="TODAY'S WEIGHT" 
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm mono focus:outline-none focus:border-orange-500 uppercase" />
+            <span class="absolute right-3 top-2.5 text-xs text-zinc-500 mono font-bold">LBS</span>
+          </div>
+          <button onclick="saveDailyWeight()" class="px-5 bg-zinc-800 hover:bg-orange-500 hover:text-black border border-zinc-700 hover:border-orange-500 font-bold text-xs uppercase tracking-wider rounded-lg transition">
+            Record
+          </button>
+        </div>
+      </div>
+
+      <!-- FOOD LOGGING CARD -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+          <i class="fa-solid fa-utensils text-orange-500"></i> Deploy Rations
+        </h2>
+
+        <!-- MEAL SELECTOR -->
+        <div class="grid grid-cols-4 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="mealType" value="Breakfast" class="peer sr-only" checked />
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+              Breakfast
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="mealType" value="Lunch" class="peer sr-only" />
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+              Lunch
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="mealType" value="Dinner" class="peer sr-only" />
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+              Dinner
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="mealType" value="Snack" class="peer sr-only" />
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+              Snack
+            </div>
+          </label>
+        </div>
+
+        <!-- SEARCH / AUTOFILL INPUT -->
+        <div class="space-y-1">
+          <label class="text-xs uppercase font-bold text-zinc-400">Ration Name & Quantity</label>
+          <div class="flex gap-2">
+            <input type="text" id="foodSearchInput" placeholder="E.G. 200G STEAK, 2 EGGS, 1 CUP RICE" 
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm uppercase mono focus:outline-none focus:border-orange-500" />
+            <button onclick="autofillMacros()" id="autofillBtn" class="px-4 bg-orange-500 text-black font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-orange-400 transition flex items-center gap-1.5 whitespace-nowrap">
+              <i class="fa-solid fa-bolt"></i> Auto-Fill
+            </button>
+          </div>
+          <p id="searchStatus" class="text-xs text-zinc-500 mono"></p>
+        </div>
+
+        <!-- MACRO BREAKDOWN INPUTS -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          <div>
+            <label class="text-[10px] uppercase font-bold text-zinc-400">Calories</label>
+            <div class="relative mt-1">
+              <input type="number" id="inputKcal" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-orange-400 focus:outline-none focus:border-orange-500" />
+              <span class="absolute right-2 top-2.5 text-[10px] text-zinc-600 mono">KCAL</span>
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase font-bold text-zinc-400">Protein</label>
+            <div class="relative mt-1">
+              <input type="number" id="inputProtein" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-blue-400 focus:outline-none focus:border-blue-500" />
+              <span class="absolute right-2 top-2.5 text-[10px] text-zinc-600 mono">G</span>
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase font-bold text-zinc-400">Carbs</label>
+            <div class="relative mt-1">
+              <input type="number" id="inputCarbs" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-amber-400 focus:outline-none focus:border-amber-500" />
+              <span class="absolute right-2 top-2.5 text-[10px] text-zinc-600 mono">G</span>
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase font-bold text-zinc-400">Sodium</label>
+            <div class="relative mt-1">
+              <input type="number" id="inputSodium" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-zinc-300 focus:outline-none focus:border-zinc-400" />
+              <span class="absolute right-2 top-2.5 text-[10px] text-zinc-600 mono">MG</span>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="commitMealEntry()" class="w-full py-3 bg-zinc-100 hover:bg-orange-500 text-zinc-950 font-black uppercase tracking-wider rounded-lg transition duration-200 shadow-lg">
+          Log Entry to Protocol
+        </button>
+      </div>
+
+      <!-- TODAY'S LOGGED ENTRIES -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Today's Ration Log</h3>
+          <span id="logCountBadge" class="text-xs mono text-zinc-500">0 ENTRIES</span>
+        </div>
+        <div id="loggedEntriesList" class="space-y-2">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: DAILY REPORT -->
+    <!-- ========================================== -->
+    <section id="view-daily" class="tab-view hidden space-y-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-5">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center justify-between">
+          <span>Daily Macro Breakdown</span>
+          <span id="dailyDateHeader" class="text-xs mono text-orange-400 font-semibold"></span>
+        </h2>
+
+        <!-- CALORIE PROGRESS BAR -->
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs mono">
+            <span class="text-zinc-400">ENERGY CONSUMED</span>
+            <span class="font-bold text-orange-400"><span id="dailyKcalVal">0</span> / <span id="dailyTdeeGoal">2500</span> KCAL</span>
+          </div>
+          <div class="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800">
+            <div id="dailyKcalBar" class="bg-orange-500 h-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- MACRO CARDS -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
+            <div class="text-[10px] font-bold text-zinc-500 uppercase">Protein</div>
+            <div id="dailyProteinVal" class="text-xl font-extrabold mono text-blue-400 mt-1">0<span class="text-xs">g</span></div>
+          </div>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
+            <div class="text-[10px] font-bold text-zinc-500 uppercase">Carbohydrates</div>
+            <div id="dailyCarbsVal" class="text-xl font-extrabold mono text-amber-400 mt-1">0<span class="text-xs">g</span></div>
+          </div>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
+            <div class="text-[10px] font-bold text-zinc-500 uppercase">Sodium</div>
+            <div id="dailySodiumVal" class="text-xl font-extrabold mono text-zinc-300 mt-1">0<span class="text-xs">mg</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BREAKDOWN BY MEAL -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Distribution By Meal</h3>
+        <div id="mealDistributionList" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: WEEKLY INTEL (SURPLUS / DEFICIT) -->
+    <!-- ========================================== -->
+    <section id="view-weekly" class="tab-view hidden space-y-6">
+      
+      <!-- SURPLUS / DEFICIT BANNER -->
+      <div id="weeklyBannerCard" class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">7-Day Energy Variance</span>
+          <span id="weeklyStatusBadge" class="text-xs mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">CALCULATING</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <div class="text-[11px] font-bold text-zinc-500 uppercase">Net Balance (7 Days)</div>
+            <div id="weeklyNetKcal" class="text-2xl font-black mono text-zinc-100 mt-1">0 KCAL</div>
+          </div>
+          <div>
+            <div class="text-[11px] font-bold text-zinc-500 uppercase">Projected Mass Shift</div>
+            <div id="weeklyMassShift" class="text-2xl font-black mono text-orange-400 mt-1">0.00 LBS</div>
+          </div>
+        </div>
+
+        <p id="weeklyIntelDesc" class="text-xs text-zinc-400 leading-relaxed border-t border-zinc-800 pt-3">
+          Set up your biometrics in the Biometrics tab to compute your Mifflin-St Jeor metabolic baseline.
+        </p>
+      </div>
+
+      <!-- 7-DAY KCAL CONSUMPTION TABLE -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Last 7 Days Caloric History</h3>
+        <div id="weeklyHistoryList" class="space-y-2 mono text-xs">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: BIOMETRICS & COMMAND PROFILE -->
+    <!-- ========================================== -->
+    <section id="view-profile" class="tab-view hidden space-y-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-orange-500"></i> Metabolic Configuration (Mifflin-St Jeor)
+        </h2>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[10px] font-bold text-zinc-400 uppercase">Age</label>
+            <input type="number" id="bioAge" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono" placeholder="28" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-zinc-400 uppercase">Gender</label>
+            <select id="bioGender" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono">
+              <option value="male">Male (+5)</option>
+              <option value="female">Female (-161)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-zinc-400 uppercase">Height (Inches)</label>
+            <input type="number" id="bioHeight" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono" placeholder="70" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-zinc-400 uppercase">Base Weight (Lbs)</label>
+            <input type="number" step="0.1" id="bioWeight" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono" placeholder="185" />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-zinc-400 uppercase">Training Days Per Week</label>
+          <select id="bioActivity" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono">
+            <option value="1.2">0 Days (Sedentary - Desk Job)</option>
+            <option value="1.375">1 - 2 Days (Light Training)</option>
+            <option value="1.55" selected>3 - 5 Days (Moderate Combat / Lifting)</option>
+            <option value="1.725">6 - 7 Days (Heavy Heavy Protocol)</option>
+          </select>
+        </div>
+
+        <button onclick="saveBiometrics()" class="w-full py-2.5 bg-orange-500 hover:bg-orange-400 text-black font-extrabold uppercase rounded-lg text-xs tracking-wider transition">
+          Calculate & Save Biometrics
+        </button>
+
+        <div id="tdeeResultBox" class="mt-4 p-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs mono space-y-1">
+          <div class="text-zinc-500 uppercase">Calculated Maintenance (TDEE):</div>
+          <div id="tdeeDisplayValue" class="text-xl font-extrabold text-orange-400">-- KCAL / DAY</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC ENGINE -->
+  <!-- ========================================== -->
+  <script>
+    // Local Database Keys
+    const DB_KEYS = {
+      MEALS: 'iron_meals_v1',
+      WEIGHTS: 'iron_weights_v1',
+      PROFILE: 'iron_profile_v1'
+    };
+
+    // Fast-lookup nutrition database for instant autofill
+    const COMMON_FOODS = [
+      { name: 'chicken breast', unitKcal: 1.65, p: 0.31, c: 0, s: 0.74 },
+      { name: 'steak', unitKcal: 2.50, p: 0.26, c: 0, s: 0.60 },
+      { name: 'ground beef', unitKcal: 2.50, p: 0.26, c: 0, s: 0.70 },
+      { name: 'white rice', unitKcal: 1.30, p: 0.027, c: 0.28, s: 0.01 },
+      { name: 'brown rice', unitKcal: 1.11, p: 0.026, c: 0.23, s: 0.01 },
+      { name: 'egg', perItem: { kcal: 78, p: 6, c: 0.6, s: 62 } },
+      { name: 'eggs', perItem: { kcal: 78, p: 6, c: 0.6, s: 62 } },
+      { name: 'oatmeal', unitKcal: 3.89, p: 0.17, c: 0.66, s: 0.02 },
+      { name: 'oats', unitKcal: 3.89, p: 0.17, c: 0.66, s: 0.02 },
+      { name: 'whey protein', perItem: { kcal: 120, p: 24, c: 3, s: 130 } },
+      { name: 'salmon', unitKcal: 2.08, p: 0.20, c: 0, s: 0.59 },
+      { name: 'potato', unitKcal: 0.87, p: 0.02, c: 0.20, s: 0.05 },
+      { name: 'sweet potato', unitKcal: 0.86, p: 0.016, c: 0.20, s: 0.55 },
+      { name: 'banana', perItem: { kcal: 105, p: 1.3, c: 27, s: 1 } },
+      { name: 'avocado', perItem: { kcal: 240, p: 3, c: 12, s: 10 } }
+    ];
+
+    // Helper: format YYYY-MM-DD
+    function getTodayString() {
+      const d = new Date();
+      return d.toISOString().split('T')[0];
+    }
+
+    // Switch between UI tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-orange-500', 'text-black', 'font-extrabold');
+        btn.classList.add('text-zinc-400');
+      });
+
+      document.getElementById('view-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-' + tabId);
+      activeBtn.classList.remove('text-zinc-400');
+      activeBtn.classList.add('bg-orange-500', 'text-black', 'font-extrabold');
+
+      if (tabId === 'daily') renderDailyReport();
+      if (tabId === 'weekly') renderWeeklyIntel();
+    }
+
+    // AUTOFILL ENGINE
+    async function autofillMacros() {
+      const input = document.getElementById('foodSearchInput').value.trim().toLowerCase();
+      const status = document.getElementById('searchStatus');
+      if (!input) return;
+
+      status.innerText = "PARSING FOOD INTEL...";
+
+      // Check local food database first
+      let matched = false;
+      for (const food of COMMON_FOODS) {
+        if (input.includes(food.name)) {
+          matched = true;
+          let multiplier = 100; // default 100g
+
+          // Extract numbers (e.g. 200g, 2 eggs, 150)
+          const numberMatch = input.match(/\d+/);
+          if (numberMatch) multiplier = parseFloat(numberMatch[0]);
+
+          if (food.perItem) {
+            document.getElementById('inputKcal').value = Math.round(food.perItem.kcal * multiplier);
+            document.getElementById('inputProtein').value = Math.round(food.perItem.p * multiplier);
+            document.getElementById('inputCarbs').value = Math.round(food.perItem.c * multiplier);
+            document.getElementById('inputSodium').value = Math.round(food.perItem.s * multiplier);
+          } else {
+            document.getElementById('inputKcal').value = Math.round(food.unitKcal * multiplier);
+            document.getElementById('inputProtein').value = Math.round(food.p * multiplier);
+            document.getElementById('inputCarbs').value = Math.round(food.c * multiplier);
+            document.getElementById('inputSodium').value = Math.round(food.s * multiplier);
+          }
+          status.innerText = `IDENTIFIED: ${food.name.toUpperCase()} (${multiplier}${food.perItem ? ' items' : 'g'})`;
+          return;
+        }
+      }
+
+      // If not in local table, query Open Food Facts API
+      try {
+        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(input)}&search_simple=1&action=process&json=1&page_size=1`);
+        const data = await res.json();
+        if (data.products && data.products.length > 0) {
+          const nut = data.products[0].nutriments;
+          document.getElementById('inputKcal').value = Math.round(nut['energy-kcal_100g'] || nut['energy-kcal'] || 0);
+          document.getElementById('inputProtein').value = Math.round(nut['proteins_100g'] || 0);
+          document.getElementById('inputCarbs').value = Math.round(nut['carbohydrates_100g'] || 0);
+          document.getElementById('inputSodium').value = Math.round((nut['sodium_100g'] || 0) * 1000);
+          status.innerText = `FETCHED: ${data.products[0].product_name.toUpperCase()} (PER 100G)`;
+        } else {
+          status.innerText = "NOT FOUND IN DATABASE. ENTER MANUALLY.";
+        }
+      } catch (e) {
+        status.innerText = "LOOKUP OFFLINE. INPUT VALUES MANUALLY.";
+      }
+    }
+
+    // SAVE MEAL ENTRY
+    function commitMealEntry() {
+      const mealType = document.querySelector('input[name="mealType"]:checked').value;
+      const foodName = document.getElementById('foodSearchInput').value.trim() || 'Ration Item';
+      const kcal = parseInt(document.getElementById('inputKcal').value) || 0;
+      const protein = parseInt(document.getElementById('inputProtein').value) || 0;
+      const carbs = parseInt(document.getElementById('inputCarbs').value) || 0;
+      const sodium = parseInt(document.getElementById('inputSodium').value) || 0;
+
+      if (kcal === 0 && protein === 0) return;
+
+      const entry = {
+        id: Date.now().toString(),
+        date: getTodayString(),
+        mealType,
+        foodName,
+        kcal,
+        protein,
+        carbs,
+        sodium
+      };
+
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      meals.unshift(entry);
+      localStorage.setItem(DB_KEYS.MEALS, JSON.stringify(meals));
+
+      // Clear inputs
+      document.getElementById('foodSearchInput').value = '';
+      document.getElementById('inputKcal').value = '';
+      document.getElementById('inputProtein').value = '';
+      document.getElementById('inputCarbs').value = '';
+      document.getElementById('inputSodium').value = '';
+      document.getElementById('searchStatus').innerText = '';
+
+      renderLoggedEntries();
+    }
+
+    // DELETE MEAL ENTRY
+    function deleteMeal(id) {
+      let meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      meals = meals.filter(m => m.id !== id);
+      localStorage.setItem(DB_KEYS.MEALS, JSON.stringify(meals));
+      renderLoggedEntries();
+    }
+
+    // RENDER LOGGED ENTRIES
+    function renderLoggedEntries() {
+      const today = getTodayString();
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      const todaysMeals = meals.filter(m => m.date === today);
+
+      const listContainer = document.getElementById('loggedEntriesList');
+      const countBadge = document.getElementById('logCountBadge');
+      countBadge.innerText = `${todaysMeals.length} ENTRIES`;
+
+      if (todaysMeals.length === 0) {
+        listContainer.innerHTML = `<div class="p-4 text-center text-xs text-zinc-600 border border-zinc-900 rounded-lg">NO RATIONS LOGGED TODAY</div>`;
+        return;
+      }
+
+      listContainer.innerHTML = todaysMeals.map(m => `
+        <div class="bg-zinc-900/60 border border-zinc-800/80 p-3 rounded-lg flex items-center justify-between">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-orange-400 font-bold uppercase rounded">${m.mealType}</span>
+              <span class="text-sm font-bold uppercase text-zinc-200">${m.foodName}</span>
+            </div>
+            <div class="text-xs mono text-zinc-500">
+              <span class="text-orange-400 font-bold">${m.kcal} kcal</span> | P: ${m.protein}g | C: ${m.carbs}g | Na: ${m.sodium}mg
+            </div>
+          </div>
+          <button onclick="deleteMeal('${m.id}')" class="text-zinc-600 hover:text-red-500 p-2 transition">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // DAILY REPORT CALCULATIONS
+    function renderDailyReport() {
+      const today = getTodayString();
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]').filter(m => m.date === today);
+      const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
+      const tdee = profile.tdee || 2500;
+
+      document.getElementById('dailyDateHeader').innerText = today;
+      document.getElementById('dailyTdeeGoal').innerText = tdee;
+
+      const totalKcal = meals.reduce((sum, m) => sum + m.kcal, 0);
+      const totalP = meals.reduce((sum, m) => sum + m.protein, 0);
+      const totalC = meals.reduce((sum, m) => sum + m.carbs, 0);
+      const totalS = meals.reduce((sum, m) => sum + m.sodium, 0);
+
+      document.getElementById('dailyKcalVal').innerText = totalKcal;
+      document.getElementById('dailyProteinVal').innerHTML = `${totalP}<span class="text-xs">g</span>`;
+      document.getElementById('dailyCarbsVal').innerHTML = `${totalC}<span class="text-xs">g</span>`;
+      document.getElementById('dailySodiumVal').innerHTML = `${totalS}<span class="text-xs">mg</span>`;
+
+      const pct = Math.min(100, Math.round((totalKcal / tdee) * 100));
+      document.getElementById('dailyKcalBar').style.width = `${pct}%`;
+
+      // Meals breakdown
+      const types = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+      const distContainer = document.getElementById('mealDistributionList');
+      distContainer.innerHTML = types.map(t => {
+        const filtered = meals.filter(m => m.mealType === t);
+        const k = filtered.reduce((s, m) => s + m.kcal, 0);
+        return `
+          <div class="flex items-center justify-between text-xs mono bg-zinc-950 p-2.5 rounded border border-zinc-900">
+            <span class="font-bold text-zinc-300 uppercase">${t}</span>
+            <span class="text-orange-400 font-bold">${k} KCAL</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // WEEKLY REPORT ENGINE (DEFICIT / SURPLUS IN LBS)
+    function renderWeeklyIntel() {
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
+      const dailyTdee = profile.tdee || 2500;
+      const weeklyTdee = dailyTdee * 7;
+
+      // Group last 7 days
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        days.push(d.toISOString().split('T')[0]);
+      }
+
+      let total7DayConsumed = 0;
+      const historyHtml = days.map(dateStr => {
+        const dayMeals = meals.filter(m => m.date === dateStr);
+        const dayKcal = dayMeals.reduce((s, m) => s + m.kcal, 0);
+        total7DayConsumed += dayKcal;
+        const diff = dayKcal - dailyTdee;
+        const diffColor = diff > 0 ? 'text-orange-400' : 'text-emerald-400';
+        return `
+          <div class="flex justify-between items-center py-1.5 border-b border-zinc-900">
+            <span class="text-zinc-400">${dateStr}</span>
+            <div class="space-x-3">
+              <span class="text-zinc-200 font-bold">${dayKcal} KCAL</span>
+              <span class="${diffColor}">${diff > 0 ? '+' : ''}${diff}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('weeklyHistoryList').innerHTML = historyHtml;
+
+      const netBalance = total7DayConsumed - weeklyTdee;
+      const lbsShift = (netBalance / 3500).toFixed(2); // 3,500 kcal per lb of mass
+
+      document.getElementById('weeklyNetKcal').innerText = `${netBalance > 0 ? '+' : ''}${netBalance} KCAL`;
+      
+      const badge = document.getElementById('weeklyStatusBadge');
+      const massShiftEl = document.getElementById('weeklyMassShift');
+      const desc = document.getElementById('weeklyIntelDesc');
+
+      if (netBalance < 0) {
+        badge.innerText = "CALORIC DEFICIT";
+        badge.className = "text-xs mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
+        massShiftEl.className = "text-2xl font-black mono text-emerald-400 mt-1";
+        massShiftEl.innerText = `${lbsShift} LBS`;
+        desc.innerText = `You burned ${Math.abs(netBalance)} kcal more than maintenance over 7 days. Estimated fat loss: ${Math.abs(lbsShift)} lbs.`;
+      } else {
+        badge.innerText = "CALORIC SURPLUS";
+        badge.className = "text-xs mono font-bold px-2 py-0.5 rounded bg-orange-950 text-orange-400 border border-orange-800";
+        massShiftEl.className = "text-2xl font-black mono text-orange-400 mt-1";
+        massShiftEl.innerText = `+${lbsShift} LBS`;
+        desc.innerText = `You consumed ${netBalance} kcal over maintenance over 7 days. Estimated mass increase: +${lbsShift} lbs.`;
+      }
+    }
+
+    // SAVE DAILY WEIGHT
+    function saveDailyWeight() {
+      const val = parseFloat(document.getElementById('dailyWeightInput').value);
+      if (!val) return;
+      const weights = JSON.parse(localStorage.getItem(DB_KEYS.WEIGHTS) || '{}');
+      weights[getTodayString()] = val;
+      localStorage.setItem(DB_KEYS.WEIGHTS, JSON.stringify(weights));
+      alert(`WEIGHT LOGGED: ${val} LBS`);
+    }
+
+    // BIOMETRICS ENGINE (Mifflin-St Jeor)
+    function saveBiometrics() {
+      const age = parseInt(document.getElementById('bioAge').value) || 28;
+      const gender = document.getElementById('bioGender').value;
+      const heightInches = parseFloat(document.getElementById('bioHeight').value) || 70;
+      const weightLbs = parseFloat(document.getElementById('bioWeight').value) || 180;
+      const activity = parseFloat(document.getElementById('bioActivity').value) || 1.55;
+
+      // Convert imperial to metric
+      const weightKg = weightLbs * 0.453592;
+      const heightCm = heightInches * 2.54;
+
+      // Mifflin-St Jeor formula
+      let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+      bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
+
+      const tdee = Math.round(bmr * activity);
+
+      const profile = { age, gender, heightInches, weightLbs, activity, tdee };
+      localStorage.setItem(DB_KEYS.PROFILE, JSON.stringify(profile));
+
+      loadProfile();
+      alert(`BIOMETRICS SAVED. TDEE SET TO ${tdee} KCAL.`);
+    }
+
+    function loadProfile() {
+      const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
+      if (profile.tdee) {
+        document.getElementById('headerTdeeBadge').innerText = `TDEE: ${profile.tdee} KCAL`;
+        document.getElementById('tdeeDisplayValue').innerText = `${profile.tdee} KCAL / DAY`;
+        if (document.getElementById('bioAge')) document.getElementById('bioAge').value = profile.age || '';
+        if (document.getElementById('bioHeight')) document.getElementById('bioHeight').value = profile.heightInches || '';
+        if (document.getElementById('bioWeight')) document.getElementById('bioWeight').value = profile.weightLbs || '';
+        if (document.getElementById('bioActivity')) document.getElementById('bioActivity').value = profile.activity || '1.55';
+        if (document.getElementById('bioGender')) document.getElementById('bioGender').value = profile.gender || 'male';
+      }
+    }
+
+    // INITIALIZATION
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentDateLabel').innerText = getTodayString();
+      loadProfile();
+      renderLoggedEntries();
+    });
+  </script>
+</body>
+</html>
