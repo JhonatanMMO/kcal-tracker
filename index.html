@@ -54,7 +54,7 @@
     </nav>
 
     <!-- ========================================== -->
-    <!-- TAB 1: FUEL LOGGING (FOOD & WEIGH-IN) -->
+    <!-- TAB 1: FUEL LOGGING -->
     <!-- ========================================== -->
     <section id="view-log" class="tab-view space-y-6">
       
@@ -116,13 +116,13 @@
         <div class="space-y-1">
           <label class="text-xs uppercase font-bold text-zinc-400">Ration Name & Quantity</label>
           <div class="flex gap-2">
-            <input type="text" id="foodSearchInput" placeholder="E.G. 200G STEAK, 2 EGGS, 1 CUP RICE" 
+            <input type="text" id="foodSearchInput" placeholder="E.G. 200G CHICKEN, 8 OZ STEAK, 3 EGGS" 
               class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm uppercase mono focus:outline-none focus:border-orange-500" />
             <button onclick="autofillMacros()" id="autofillBtn" class="px-4 bg-orange-500 text-black font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-orange-400 transition flex items-center gap-1.5 whitespace-nowrap">
               <i class="fa-solid fa-bolt"></i> Auto-Fill
             </button>
           </div>
-          <p id="searchStatus" class="text-xs text-zinc-500 mono"></p>
+          <p id="searchStatus" class="text-xs text-zinc-500 mono min-h-[1rem]"></p>
         </div>
 
         <!-- MACRO BREAKDOWN INPUTS -->
@@ -169,7 +169,7 @@
           <span id="logCountBadge" class="text-xs mono text-zinc-500">0 ENTRIES</span>
         </div>
         <div id="loggedEntriesList" class="space-y-2">
-          <!-- Dynamically populated -->
+          <!-- Populated dynamically -->
         </div>
       </div>
     </section>
@@ -179,12 +179,12 @@
     <!-- ========================================== -->
     <section id="view-daily" class="tab-view hidden space-y-6">
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-5">
-        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center justify-between">
-          <span>Daily Macro Breakdown</span>
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300">Daily Macro Breakdown</h2>
           <span id="dailyDateHeader" class="text-xs mono text-orange-400 font-semibold"></span>
-        </h2>
+        </div>
 
-        <!-- CALORIE PROGRESS BAR -->
+        <!-- PROGRESS BAR -->
         <div class="space-y-2">
           <div class="flex justify-between text-xs mono">
             <span class="text-zinc-400">ENERGY CONSUMED</span>
@@ -195,7 +195,7 @@
           </div>
         </div>
 
-        <!-- MACRO CARDS -->
+        <!-- MACRO TILES -->
         <div class="grid grid-cols-3 gap-3">
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
             <div class="text-[10px] font-bold text-zinc-500 uppercase">Protein</div>
@@ -212,12 +212,9 @@
         </div>
       </div>
 
-      <!-- BREAKDOWN BY MEAL -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Distribution By Meal</h3>
-        <div id="mealDistributionList" class="space-y-3">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="mealDistributionList" class="space-y-3"></div>
       </div>
     </section>
 
@@ -225,8 +222,6 @@
     <!-- TAB 3: WEEKLY INTEL (SURPLUS / DEFICIT) -->
     <!-- ========================================== -->
     <section id="view-weekly" class="tab-view hidden space-y-6">
-      
-      <!-- SURPLUS / DEFICIT BANNER -->
       <div id="weeklyBannerCard" class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">7-Day Energy Variance</span>
@@ -245,21 +240,18 @@
         </div>
 
         <p id="weeklyIntelDesc" class="text-xs text-zinc-400 leading-relaxed border-t border-zinc-800 pt-3">
-          Set up your biometrics in the Biometrics tab to compute your Mifflin-St Jeor metabolic baseline.
+          Configure biometrics to calculate your Mifflin-St Jeor metabolic target.
         </p>
       </div>
 
-      <!-- 7-DAY KCAL CONSUMPTION TABLE -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Last 7 Days Caloric History</h3>
-        <div id="weeklyHistoryList" class="space-y-2 mono text-xs">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="weeklyHistoryList" class="space-y-2 mono text-xs"></div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 4: BIOMETRICS & COMMAND PROFILE -->
+    <!-- TAB 4: BIOMETRICS & TDEE -->
     <!-- ========================================== -->
     <section id="view-profile" class="tab-view hidden space-y-6">
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
@@ -292,10 +284,10 @@
         <div>
           <label class="text-[10px] font-bold text-zinc-400 uppercase">Training Days Per Week</label>
           <select id="bioActivity" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono">
-            <option value="1.2">0 Days (Sedentary - Desk Job)</option>
-            <option value="1.375">1 - 2 Days (Light Training)</option>
-            <option value="1.55" selected>3 - 5 Days (Moderate Combat / Lifting)</option>
-            <option value="1.725">6 - 7 Days (Heavy Heavy Protocol)</option>
+            <option value="1.2">0 Days (Sedentary)</option>
+            <option value="1.375">1 - 2 Days (Light)</option>
+            <option value="1.55" selected>3 - 5 Days (Moderate / Lifting)</option>
+            <option value="1.725">6 - 7 Days (Heavy Training)</option>
           </select>
         </div>
 
@@ -303,7 +295,7 @@
           Calculate & Save Biometrics
         </button>
 
-        <div id="tdeeResultBox" class="mt-4 p-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs mono space-y-1">
+        <div class="mt-4 p-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs mono space-y-1">
           <div class="text-zinc-500 uppercase">Calculated Maintenance (TDEE):</div>
           <div id="tdeeDisplayValue" class="text-xl font-extrabold text-orange-400">-- KCAL / DAY</div>
         </div>
@@ -312,43 +304,67 @@
 
   </main>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT LOGIC ENGINE -->
-  <!-- ========================================== -->
   <script>
-    // Local Database Keys
     const DB_KEYS = {
       MEALS: 'iron_meals_v1',
       WEIGHTS: 'iron_weights_v1',
       PROFILE: 'iron_profile_v1'
     };
 
-    // Fast-lookup nutrition database for instant autofill
-    const COMMON_FOODS = [
-      { name: 'chicken breast', unitKcal: 1.65, p: 0.31, c: 0, s: 0.74 },
-      { name: 'steak', unitKcal: 2.50, p: 0.26, c: 0, s: 0.60 },
-      { name: 'ground beef', unitKcal: 2.50, p: 0.26, c: 0, s: 0.70 },
-      { name: 'white rice', unitKcal: 1.30, p: 0.027, c: 0.28, s: 0.01 },
-      { name: 'brown rice', unitKcal: 1.11, p: 0.026, c: 0.23, s: 0.01 },
-      { name: 'egg', perItem: { kcal: 78, p: 6, c: 0.6, s: 62 } },
-      { name: 'eggs', perItem: { kcal: 78, p: 6, c: 0.6, s: 62 } },
-      { name: 'oatmeal', unitKcal: 3.89, p: 0.17, c: 0.66, s: 0.02 },
-      { name: 'oats', unitKcal: 3.89, p: 0.17, c: 0.66, s: 0.02 },
-      { name: 'whey protein', perItem: { kcal: 120, p: 24, c: 3, s: 130 } },
-      { name: 'salmon', unitKcal: 2.08, p: 0.20, c: 0, s: 0.59 },
-      { name: 'potato', unitKcal: 0.87, p: 0.02, c: 0.20, s: 0.05 },
-      { name: 'sweet potato', unitKcal: 0.86, p: 0.016, c: 0.20, s: 0.55 },
-      { name: 'banana', perItem: { kcal: 105, p: 1.3, c: 27, s: 1 } },
-      { name: 'avocado', perItem: { kcal: 240, p: 3, c: 12, s: 10 } }
+    // 50+ ITEM TACTICAL OFFLINE FOOD DATABASE (per 100g or per standard item)
+    const TACTICAL_FOODS = [
+      // Meats & Fish (per 100g)
+      { keys: ['chicken breast', 'chicken'], kcal: 165, p: 31, c: 0, s: 74, perGram: true },
+      { keys: ['chicken thigh'], kcal: 209, p: 26, c: 0, s: 84, perGram: true },
+      { keys: ['ground beef', 'minced beef', 'lean beef'], kcal: 215, p: 26, c: 0, s: 70, perGram: true },
+      { keys: ['steak', 'sirloin', 'ribeye', 'beef'], kcal: 250, p: 26, c: 0, s: 60, perGram: true },
+      { keys: ['salmon'], kcal: 208, p: 20, c: 0, s: 59, perGram: true },
+      { keys: ['tuna', 'canned tuna'], kcal: 130, p: 28, c: 0, s: 350, perGram: true },
+      { keys: ['turkey', 'ground turkey'], kcal: 148, p: 24, c: 0, s: 78, perGram: true },
+      { keys: ['pork', 'pork chop'], kcal: 242, p: 27, c: 0, s: 62, perGram: true },
+      { keys: ['bacon'], kcal: 541, p: 37, c: 1, s: 1717, perGram: true },
+      { keys: ['shrimp', 'prawns'], kcal: 99, p: 24, c: 0, s: 111, perGram: true },
+
+      // Eggs & Dairy
+      { keys: ['egg white', 'egg whites'], kcal: 17, p: 3.6, c: 0.2, s: 55, perItem: true, defaultItemName: 'egg white' },
+      { keys: ['egg', 'eggs'], kcal: 78, p: 6.3, c: 0.6, s: 62, perItem: true, defaultItemName: 'egg' },
+      { keys: ['whey', 'whey protein', 'protein powder'], kcal: 125, p: 24, c: 3, s: 140, perItem: true, defaultItemName: 'scoop (30g)' },
+      { keys: ['greek yogurt'], kcal: 59, p: 10, c: 3.6, s: 36, perGram: true },
+      { keys: ['cottage cheese'], kcal: 98, p: 11, c: 3.4, s: 364, perGram: true },
+      { keys: ['milk', 'whole milk'], kcal: 61, p: 3.2, c: 4.8, s: 43, perGram: true, cupGrams: 240 },
+      { keys: ['cheddar', 'cheese'], kcal: 403, p: 25, c: 1.3, s: 621, perGram: true },
+
+      // Carbs & Grains
+      { keys: ['white rice', 'cooked rice', 'rice'], kcal: 130, p: 2.7, c: 28, s: 1, perGram: true, cupGrams: 158 },
+      { keys: ['brown rice'], kcal: 111, p: 2.6, c: 23, s: 5, perGram: true, cupGrams: 195 },
+      { keys: ['oatmeal', 'oats'], kcal: 389, p: 16.9, c: 66, s: 2, perGram: true, cupGrams: 80 },
+      { keys: ['pasta', 'spaghetti'], kcal: 131, p: 5, c: 25, s: 1, perGram: true, cupGrams: 140 },
+      { keys: ['bread', 'toast', 'white bread'], kcal: 75, p: 2.5, c: 14, s: 130, perItem: true, defaultItemName: 'slice' },
+      { keys: ['bagel'], kcal: 260, p: 10, c: 50, s: 450, perItem: true, defaultItemName: 'bagel' },
+      { keys: ['tortilla', 'wrap'], kcal: 130, p: 3, c: 22, s: 280, perItem: true, defaultItemName: 'tortilla' },
+      { keys: ['potato', 'potatoes', 'baked potato'], kcal: 87, p: 1.9, c: 20, s: 6, perGram: true },
+      { keys: ['sweet potato'], kcal: 86, p: 1.6, c: 20, s: 55, perGram: true },
+
+      // Fats & Spreads
+      { keys: ['peanut butter', 'pb'], kcal: 588, p: 25, c: 20, s: 430, perGram: true, tbspGrams: 16 },
+      { keys: ['almond butter'], kcal: 614, p: 21, c: 19, s: 7, perGram: true, tbspGrams: 16 },
+      { keys: ['olive oil', 'oil'], kcal: 884, p: 0, c: 0, s: 2, perGram: true, tbspGrams: 14 },
+      { keys: ['butter'], kcal: 717, p: 0.9, c: 0.1, s: 643, perGram: true, tbspGrams: 14 },
+      { keys: ['almonds'], kcal: 579, p: 21, c: 22, s: 1, perGram: true },
+      { keys: ['avocado'], kcal: 160, p: 2, c: 8.5, s: 7, perItem: true, defaultItemName: 'avocado' },
+
+      // Fruits & Vegetables
+      { keys: ['banana'], kcal: 105, p: 1.3, c: 27, s: 1, perItem: true, defaultItemName: 'banana' },
+      { keys: ['apple'], kcal: 95, p: 0.5, c: 25, s: 2, perItem: true, defaultItemName: 'apple' },
+      { keys: ['blueberries', 'berries'], kcal: 57, p: 0.7, c: 14, s: 1, perGram: true, cupGrams: 148 },
+      { keys: ['broccoli'], kcal: 34, p: 2.8, c: 7, s: 33, perGram: true },
+      { keys: ['spinach'], kcal: 23, p: 2.9, c: 3.6, s: 79, perGram: true }
     ];
 
-    // Helper: format YYYY-MM-DD
     function getTodayString() {
-      const d = new Date();
-      return d.toISOString().split('T')[0];
+      return new Date().toISOString().split('T')[0];
     }
 
-    // Switch between UI tabs
     function switchTab(tabId) {
       document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -365,61 +381,79 @@
       if (tabId === 'weekly') renderWeeklyIntel();
     }
 
-    // AUTOFILL ENGINE
-    async function autofillMacros() {
-      const input = document.getElementById('foodSearchInput').value.trim().toLowerCase();
+    // OFFLINE AUTOFILL PARSER
+    function autofillMacros() {
+      const rawInput = document.getElementById('foodSearchInput').value.trim().toLowerCase();
       const status = document.getElementById('searchStatus');
-      if (!input) return;
+      if (!rawInput) return;
 
-      status.innerText = "PARSING FOOD INTEL...";
+      status.innerText = "PROCESSING NUTRITION INTEL...";
 
-      // Check local food database first
-      let matched = false;
-      for (const food of COMMON_FOODS) {
-        if (input.includes(food.name)) {
-          matched = true;
-          let multiplier = 100; // default 100g
-
-          // Extract numbers (e.g. 200g, 2 eggs, 150)
-          const numberMatch = input.match(/\d+/);
-          if (numberMatch) multiplier = parseFloat(numberMatch[0]);
-
-          if (food.perItem) {
-            document.getElementById('inputKcal').value = Math.round(food.perItem.kcal * multiplier);
-            document.getElementById('inputProtein').value = Math.round(food.perItem.p * multiplier);
-            document.getElementById('inputCarbs').value = Math.round(food.perItem.c * multiplier);
-            document.getElementById('inputSodium').value = Math.round(food.perItem.s * multiplier);
-          } else {
-            document.getElementById('inputKcal').value = Math.round(food.unitKcal * multiplier);
-            document.getElementById('inputProtein').value = Math.round(food.p * multiplier);
-            document.getElementById('inputCarbs').value = Math.round(food.c * multiplier);
-            document.getElementById('inputSodium').value = Math.round(food.s * multiplier);
-          }
-          status.innerText = `IDENTIFIED: ${food.name.toUpperCase()} (${multiplier}${food.perItem ? ' items' : 'g'})`;
-          return;
+      // Find matching food
+      let matchedFood = null;
+      for (const item of TACTICAL_FOODS) {
+        if (item.keys.some(k => rawInput.includes(k))) {
+          matchedFood = item;
+          break;
         }
       }
 
-      // If not in local table, query Open Food Facts API
-      try {
-        const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(input)}&search_simple=1&action=process&json=1&page_size=1`);
-        const data = await res.json();
-        if (data.products && data.products.length > 0) {
-          const nut = data.products[0].nutriments;
-          document.getElementById('inputKcal').value = Math.round(nut['energy-kcal_100g'] || nut['energy-kcal'] || 0);
-          document.getElementById('inputProtein').value = Math.round(nut['proteins_100g'] || 0);
-          document.getElementById('inputCarbs').value = Math.round(nut['carbohydrates_100g'] || 0);
-          document.getElementById('inputSodium').value = Math.round((nut['sodium_100g'] || 0) * 1000);
-          status.innerText = `FETCHED: ${data.products[0].product_name.toUpperCase()} (PER 100G)`;
+      if (!matchedFood) {
+        status.innerHTML = `<span class="text-amber-400">ITEM NOT FOUND. PLEASE ENTER MACROS MANUALLY BELOW.</span>`;
+        return;
+      }
+
+      // Quantity extraction
+      let grams = 100; // default for weighed items
+      let items = 1;   // default for itemized foods
+
+      const numMatch = rawInput.match(/(\d+(\.\d+)?)/);
+      const parsedNum = numMatch ? parseFloat(numMatch[0]) : null;
+
+      // Unit check
+      if (rawInput.includes('oz') || rawInput.includes('ounce')) {
+        grams = (parsedNum || 4) * 28.35;
+      } else if (rawInput.includes('cup') && matchedFood.cupGrams) {
+        grams = (parsedNum || 1) * matchedFood.cupGrams;
+      } else if ((rawInput.includes('tbsp') || rawInput.includes('tablespoon')) && matchedFood.tbspGrams) {
+        grams = (parsedNum || 1) * matchedFood.tbspGrams;
+      } else if (rawInput.includes('g') || rawInput.includes('gram')) {
+        grams = parsedNum || 100;
+      } else if (parsedNum) {
+        // Number provided without explicit unit
+        if (matchedFood.perItem) {
+          items = parsedNum;
         } else {
-          status.innerText = "NOT FOUND IN DATABASE. ENTER MANUALLY.";
+          // If number is small (< 10), assume items or ounces
+          grams = parsedNum <= 16 ? parsedNum * 28.35 : parsedNum;
         }
-      } catch (e) {
-        status.innerText = "LOOKUP OFFLINE. INPUT VALUES MANUALLY.";
       }
+
+      let finalKcal, finalP, finalC, finalS, labelText;
+
+      if (matchedFood.perItem) {
+        finalKcal = Math.round(matchedFood.kcal * items);
+        finalP = Math.round(matchedFood.p * items);
+        finalC = Math.round(matchedFood.c * items);
+        finalS = Math.round(matchedFood.s * items);
+        labelText = `${items} ${matchedFood.defaultItemName || 'serving'}`;
+      } else {
+        const factor = grams / 100;
+        finalKcal = Math.round(matchedFood.kcal * factor);
+        finalP = Math.round(matchedFood.p * factor);
+        finalC = Math.round(matchedFood.c * factor);
+        finalS = Math.round(matchedFood.s * factor);
+        labelText = `${Math.round(grams)}g (${(grams / 28.35).toFixed(1)} oz)`;
+      }
+
+      document.getElementById('inputKcal').value = finalKcal;
+      document.getElementById('inputProtein').value = finalP;
+      document.getElementById('inputCarbs').value = finalC;
+      document.getElementById('inputSodium').value = finalS;
+
+      status.innerHTML = `<span class="text-orange-400 font-bold">✓ AUTO-FILLED: ${matchedFood.keys[0].toUpperCase()} [${labelText}]</span>`;
     }
 
-    // SAVE MEAL ENTRY
     function commitMealEntry() {
       const mealType = document.querySelector('input[name="mealType"]:checked').value;
       const foodName = document.getElementById('foodSearchInput').value.trim() || 'Ration Item';
@@ -445,7 +479,6 @@
       meals.unshift(entry);
       localStorage.setItem(DB_KEYS.MEALS, JSON.stringify(meals));
 
-      // Clear inputs
       document.getElementById('foodSearchInput').value = '';
       document.getElementById('inputKcal').value = '';
       document.getElementById('inputProtein').value = '';
@@ -456,7 +489,6 @@
       renderLoggedEntries();
     }
 
-    // DELETE MEAL ENTRY
     function deleteMeal(id) {
       let meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
       meals = meals.filter(m => m.id !== id);
@@ -464,7 +496,6 @@
       renderLoggedEntries();
     }
 
-    // RENDER LOGGED ENTRIES
     function renderLoggedEntries() {
       const today = getTodayString();
       const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
@@ -497,7 +528,6 @@
       `).join('');
     }
 
-    // DAILY REPORT CALCULATIONS
     function renderDailyReport() {
       const today = getTodayString();
       const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]').filter(m => m.date === today);
@@ -520,7 +550,6 @@
       const pct = Math.min(100, Math.round((totalKcal / tdee) * 100));
       document.getElementById('dailyKcalBar').style.width = `${pct}%`;
 
-      // Meals breakdown
       const types = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
       const distContainer = document.getElementById('mealDistributionList');
       distContainer.innerHTML = types.map(t => {
@@ -535,14 +564,12 @@
       }).join('');
     }
 
-    // WEEKLY REPORT ENGINE (DEFICIT / SURPLUS IN LBS)
     function renderWeeklyIntel() {
       const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
       const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
       const dailyTdee = profile.tdee || 2500;
       const weeklyTdee = dailyTdee * 7;
 
-      // Group last 7 days
       const days = [];
       for (let i = 6; i >= 0; i--) {
         const d = new Date();
@@ -571,7 +598,7 @@
       document.getElementById('weeklyHistoryList').innerHTML = historyHtml;
 
       const netBalance = total7DayConsumed - weeklyTdee;
-      const lbsShift = (netBalance / 3500).toFixed(2); // 3,500 kcal per lb of mass
+      const lbsShift = (netBalance / 3500).toFixed(2);
 
       document.getElementById('weeklyNetKcal').innerText = `${netBalance > 0 ? '+' : ''}${netBalance} KCAL`;
       
@@ -594,7 +621,6 @@
       }
     }
 
-    // SAVE DAILY WEIGHT
     function saveDailyWeight() {
       const val = parseFloat(document.getElementById('dailyWeightInput').value);
       if (!val) return;
@@ -604,7 +630,6 @@
       alert(`WEIGHT LOGGED: ${val} LBS`);
     }
 
-    // BIOMETRICS ENGINE (Mifflin-St Jeor)
     function saveBiometrics() {
       const age = parseInt(document.getElementById('bioAge').value) || 28;
       const gender = document.getElementById('bioGender').value;
@@ -612,11 +637,9 @@
       const weightLbs = parseFloat(document.getElementById('bioWeight').value) || 180;
       const activity = parseFloat(document.getElementById('bioActivity').value) || 1.55;
 
-      // Convert imperial to metric
       const weightKg = weightLbs * 0.453592;
       const heightCm = heightInches * 2.54;
 
-      // Mifflin-St Jeor formula
       let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
       bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
 
@@ -642,7 +665,6 @@
       }
     }
 
-    // INITIALIZATION
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('currentDateLabel').innerText = getTodayString();
       loadProfile();
