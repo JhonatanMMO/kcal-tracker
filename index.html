@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>IRON MACROS // TACTICAL NUTRITION TRACKER</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -14,21 +17,29 @@
       color: #fafafa;
     }
     .mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Custom Scrollbar for history */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #059669; border-radius: 4px; }
   </style>
 </head>
-<body class="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-orange-500 selection:text-black">
+<body class="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-emerald-600 selection:text-black">
 
   <!-- TOP HEADER -->
-  <header class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur sticky top-0 z-50 px-4 py-3">
+  <header class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-lg">
     <div class="max-w-3xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <div class="w-3 h-7 bg-orange-500 skew-x-[-12deg]"></div>
+        <div class="w-3 h-7 bg-emerald-600 skew-x-[-12deg]"></div>
         <h1 class="text-xl font-bold tracking-wider uppercase text-zinc-100">
-          IRON <span class="text-orange-500">MACROS</span>
+          IRON <span class="text-emerald-500">MACROS</span>
         </h1>
       </div>
-      <div class="flex items-center gap-3">
-        <span id="headerTdeeBadge" class="text-xs mono px-2.5 py-1 bg-zinc-800 border border-zinc-700 rounded text-orange-400 font-semibold">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] mono px-2 py-0.5 bg-emerald-950 border border-emerald-700 text-emerald-400 font-bold rounded">
+          ENGINE v3.0
+        </span>
+        <span id="headerTdeeBadge" class="text-xs mono px-2.5 py-1 bg-zinc-800 border border-zinc-700 rounded text-emerald-400 font-semibold">
           TDEE: -- KCAL
         </span>
       </div>
@@ -38,75 +49,64 @@
   <main class="max-w-3xl mx-auto px-4 py-6 space-y-6">
 
     <!-- NAVIGATION TABS -->
-    <nav class="grid grid-cols-4 gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-bold uppercase tracking-wider">
-      <button onclick="switchTab('log')" id="tab-log" class="tab-btn py-2.5 rounded bg-orange-500 text-black font-extrabold transition">
+    <nav class="grid grid-cols-4 gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+      <button onclick="switchTab('log')" id="tab-log" class="tab-btn py-2.5 rounded bg-emerald-600 text-black font-extrabold transition">
         Log Fuel
       </button>
-      <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
-        Daily Intel
+      <button onclick="switchTab('history')" id="tab-history" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
+        History
       </button>
-      <button onclick="switchTab('weekly')" id="tab-weekly" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
-        Weekly Intel
+      <button onclick="switchTab('coach')" id="tab-coach" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition flex items-center justify-center gap-1">
+        <i class="fa-solid fa-crosshairs"></i> Coach
       </button>
       <button onclick="switchTab('profile')" id="tab-profile" class="tab-btn py-2.5 rounded text-zinc-400 hover:text-white transition">
         Biometrics
       </button>
     </nav>
 
+    <!-- SPIRITUAL DISCIPLINE BANNER -->
+    <div id="verseBanner" class="bg-zinc-900 border-l-4 border-emerald-600 rounded-r-xl p-4 flex gap-3 shadow-md">
+      <i class="fa-solid fa-book-open text-emerald-500 mt-1"></i>
+      <div>
+        <p id="verseText" class="text-sm text-zinc-300 italic font-medium leading-relaxed"></p>
+        <p id="verseRef" class="text-xs text-emerald-500 font-bold mt-2 uppercase tracking-wider"></p>
+      </div>
+    </div>
+
     <!-- ========================================== -->
     <!-- TAB 1: FUEL LOGGING -->
     <!-- ========================================== -->
     <section id="view-log" class="tab-view space-y-6">
       
-      <!-- QUICK WEIGH-IN CARD -->
-      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-            <i class="fa-solid fa-weight-scale text-orange-500"></i> Daily Mass Check-In
-          </h2>
-          <span id="currentDateLabel" class="text-xs mono text-zinc-500"></span>
-        </div>
-        <div class="flex gap-2">
-          <div class="relative flex-1">
-            <input type="number" step="0.1" id="dailyWeightInput" placeholder="TODAY'S WEIGHT" 
-              class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm mono focus:outline-none focus:border-orange-500 uppercase" />
-            <span class="absolute right-3 top-2.5 text-xs text-zinc-500 mono font-bold">LBS</span>
-          </div>
-          <button onclick="saveDailyWeight()" class="px-5 bg-zinc-800 hover:bg-orange-500 hover:text-black border border-zinc-700 hover:border-orange-500 font-bold text-xs uppercase tracking-wider rounded-lg transition">
-            Record
-          </button>
-        </div>
-      </div>
-
       <!-- FOOD LOGGING CARD -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
         <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-          <i class="fa-solid fa-utensils text-orange-500"></i> Deploy Rations
+          <i class="fa-solid fa-utensils text-emerald-500"></i> Deploy Rations
         </h2>
 
         <!-- MEAL SELECTOR -->
         <div class="grid grid-cols-4 gap-2">
           <label class="cursor-pointer">
             <input type="radio" name="mealType" value="Breakfast" class="peer sr-only" checked />
-            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 rounded-lg text-[10px] sm:text-xs font-bold uppercase transition">
               Breakfast
             </div>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="mealType" value="Lunch" class="peer sr-only" />
-            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 rounded-lg text-[10px] sm:text-xs font-bold uppercase transition">
               Lunch
             </div>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="mealType" value="Dinner" class="peer sr-only" />
-            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 rounded-lg text-[10px] sm:text-xs font-bold uppercase transition">
               Dinner
             </div>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="mealType" value="Snack" class="peer sr-only" />
-            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 peer-checked:text-orange-400 rounded-lg text-xs font-bold uppercase transition">
+            <div class="text-center py-2 bg-zinc-950 border border-zinc-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 rounded-lg text-[10px] sm:text-xs font-bold uppercase transition">
               Snack
             </div>
           </label>
@@ -114,15 +114,15 @@
 
         <!-- SEARCH / AUTOFILL INPUT -->
         <div class="space-y-1">
-          <label class="text-xs uppercase font-bold text-zinc-400">Ration Name & Quantity</label>
+          <label class="text-xs uppercase font-bold text-zinc-400">Ration Details (Supports exact macros)</label>
           <div class="flex gap-2">
-            <input type="text" id="foodSearchInput" placeholder="E.G. 200G CHICKEN, 8 OZ STEAK, 3 EGGS" 
-              class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm uppercase mono focus:outline-none focus:border-orange-500" />
-            <button onclick="autofillMacros()" id="autofillBtn" class="px-4 bg-orange-500 text-black font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-orange-400 transition flex items-center gap-1.5 whitespace-nowrap">
+            <input type="text" id="foodSearchInput" placeholder="1 CUP RICE or 1 OIKOS YOGURT 15G PROTEIN" 
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm uppercase mono focus:outline-none focus:border-emerald-500 transition-colors" />
+            <button onclick="autofillMacros()" id="autofillBtn" class="px-4 bg-emerald-600 text-black font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-emerald-500 transition flex items-center gap-1.5 whitespace-nowrap">
               <i class="fa-solid fa-bolt"></i> Auto-Fill
             </button>
           </div>
-          <p id="searchStatus" class="text-xs text-zinc-500 mono min-h-[1rem]"></p>
+          <p id="searchStatus" class="text-xs text-zinc-400 mono min-h-[1.25rem] pt-1"></p>
         </div>
 
         <!-- MACRO BREAKDOWN INPUTS -->
@@ -130,7 +130,7 @@
           <div>
             <label class="text-[10px] uppercase font-bold text-zinc-400">Calories</label>
             <div class="relative mt-1">
-              <input type="number" id="inputKcal" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-orange-400 focus:outline-none focus:border-orange-500" />
+              <input type="number" id="inputKcal" placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-2.5 py-2 text-sm mono font-bold text-emerald-400 focus:outline-none focus:border-emerald-500" />
               <span class="absolute right-2 top-2.5 text-[10px] text-zinc-600 mono">KCAL</span>
             </div>
           </div>
@@ -157,96 +157,109 @@
           </div>
         </div>
 
-        <button onclick="commitMealEntry()" class="w-full py-3 bg-zinc-100 hover:bg-orange-500 text-zinc-950 font-black uppercase tracking-wider rounded-lg transition duration-200 shadow-lg">
+        <button onclick="commitMealEntry()" class="w-full py-3 bg-zinc-100 hover:bg-emerald-600 text-zinc-950 font-black uppercase tracking-wider rounded-lg transition duration-200 shadow-lg">
           Log Entry to Protocol
         </button>
       </div>
 
-      <!-- TODAY'S LOGGED ENTRIES -->
+      <!-- TODAY'S LOGGED ENTRIES (QUICK VIEW) -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Today's Ration Log</h3>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Today's Quick Log</h3>
           <span id="logCountBadge" class="text-xs mono text-zinc-500">0 ENTRIES</span>
         </div>
-        <div id="loggedEntriesList" class="space-y-2">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="loggedEntriesList" class="space-y-2"></div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 2: DAILY REPORT -->
+    <!-- TAB 2: REAL-TIME HISTORY & DAILY TOTALS -->
     <!-- ========================================== -->
-    <section id="view-daily" class="tab-view hidden space-y-6">
+    <section id="view-history" class="tab-view hidden space-y-6">
+      
+      <!-- DATE SELECTOR -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center justify-between">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300">Select Date</h2>
+        <input type="date" id="historyDateSelect" onchange="renderHistoryTab()" class="bg-zinc-950 border border-zinc-700 text-emerald-400 mono font-bold p-2 rounded focus:outline-none focus:border-emerald-500">
+      </div>
+
+      <!-- DAILY MACRO TOTALS -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-5">
         <div class="flex items-center justify-between">
-          <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300">Daily Macro Breakdown</h2>
-          <span id="dailyDateHeader" class="text-xs mono text-orange-400 font-semibold"></span>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Daily Totals</h3>
+          <span id="historyTdeeDisplay" class="text-xs mono text-zinc-500"></span>
         </div>
 
-        <!-- PROGRESS BAR -->
         <div class="space-y-2">
           <div class="flex justify-between text-xs mono">
             <span class="text-zinc-400">ENERGY CONSUMED</span>
-            <span class="font-bold text-orange-400"><span id="dailyKcalVal">0</span> / <span id="dailyTdeeGoal">2500</span> KCAL</span>
+            <span class="font-bold text-emerald-400"><span id="historyTotalKcal">0</span> KCAL</span>
           </div>
           <div class="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800">
-            <div id="dailyKcalBar" class="bg-orange-500 h-full transition-all duration-300" style="width: 0%"></div>
+            <div id="historyKcalBar" class="bg-emerald-600 h-full transition-all duration-300" style="width: 0%"></div>
           </div>
         </div>
 
-        <!-- MACRO TILES -->
         <div class="grid grid-cols-3 gap-3">
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
             <div class="text-[10px] font-bold text-zinc-500 uppercase">Protein</div>
-            <div id="dailyProteinVal" class="text-xl font-extrabold mono text-blue-400 mt-1">0<span class="text-xs">g</span></div>
+            <div id="historyTotalProtein" class="text-xl font-extrabold mono text-blue-400 mt-1">0<span class="text-xs">g</span></div>
           </div>
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
-            <div class="text-[10px] font-bold text-zinc-500 uppercase">Carbohydrates</div>
-            <div id="dailyCarbsVal" class="text-xl font-extrabold mono text-amber-400 mt-1">0<span class="text-xs">g</span></div>
+            <div class="text-[10px] font-bold text-zinc-500 uppercase">Carbs</div>
+            <div id="historyTotalCarbs" class="text-xl font-extrabold mono text-amber-400 mt-1">0<span class="text-xs">g</span></div>
           </div>
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-center">
             <div class="text-[10px] font-bold text-zinc-500 uppercase">Sodium</div>
-            <div id="dailySodiumVal" class="text-xl font-extrabold mono text-zinc-300 mt-1">0<span class="text-xs">mg</span></div>
+            <div id="historyTotalSodium" class="text-xl font-extrabold mono text-zinc-300 mt-1">0<span class="text-xs">mg</span></div>
           </div>
         </div>
       </div>
 
+      <!-- DETAILED LOG FOR SELECTED DATE -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Distribution By Meal</h3>
-        <div id="mealDistributionList" class="space-y-3"></div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Itemized Log</h3>
+        <div id="historyLogList" class="space-y-2"></div>
+      </div>
+
+      <!-- 7-DAY SUMMARY LIST -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Weekly Energy Variance</h3>
+        <div id="weeklyHistoryList" class="space-y-2 mono text-xs"></div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 3: WEEKLY INTEL (SURPLUS / DEFICIT) -->
+    <!-- TAB 3: TACTICAL DIET COACH -->
     <!-- ========================================== -->
-    <section id="view-weekly" class="tab-view hidden space-y-6">
-      <div id="weeklyBannerCard" class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">7-Day Energy Variance</span>
-          <span id="weeklyStatusBadge" class="text-xs mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">CALCULATING</span>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <div class="text-[11px] font-bold text-zinc-500 uppercase">Net Balance (7 Days)</div>
-            <div id="weeklyNetKcal" class="text-2xl font-black mono text-zinc-100 mt-1">0 KCAL</div>
-          </div>
-          <div>
-            <div class="text-[11px] font-bold text-zinc-500 uppercase">Projected Mass Shift</div>
-            <div id="weeklyMassShift" class="text-2xl font-black mono text-orange-400 mt-1">0.00 LBS</div>
-          </div>
-        </div>
-
-        <p id="weeklyIntelDesc" class="text-xs text-zinc-400 leading-relaxed border-t border-zinc-800 pt-3">
-          Configure biometrics to calculate your Mifflin-St Jeor metabolic target.
+    <section id="view-coach" class="tab-view hidden space-y-6">
+      <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-5 text-center space-y-3">
+        <i class="fa-solid fa-microchip text-3xl text-emerald-500 mb-2"></i>
+        <h2 class="text-lg font-black uppercase tracking-wider text-emerald-400">Tactical Diet Analysis</h2>
+        <p class="text-xs text-zinc-400 leading-relaxed max-w-md mx-auto">
+          The engine analyzes your recent logs, flags suboptimal rations, and suggests strategic menu replacements to hit your macros efficiently.
         </p>
+        <button onclick="runDietAnalysis()" class="mt-4 px-6 py-2.5 bg-emerald-600 text-black font-extrabold uppercase rounded-lg text-xs tracking-wider transition hover:bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+          Run Analysis Scan
+        </button>
       </div>
 
-      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Last 7 Days Caloric History</h3>
-        <div id="weeklyHistoryList" class="space-y-2 mono text-xs"></div>
+      <div id="coachResultsArea" class="hidden space-y-6">
+        <!-- Improvements & Replacements -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+            <i class="fa-solid fa-wrench text-amber-500"></i> Needed Improvements
+          </h3>
+          <ul id="coachReplacements" class="space-y-3 text-sm text-zinc-300"></ul>
+        </div>
+        
+        <!-- Suggested Menu Ideas -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb text-emerald-500"></i> Suggested Menu Ideas
+          </h3>
+          <ul id="coachMenuIdeas" class="space-y-3 text-sm text-zinc-300"></ul>
+        </div>
       </div>
     </section>
 
@@ -254,9 +267,22 @@
     <!-- TAB 4: BIOMETRICS & TDEE -->
     <!-- ========================================== -->
     <section id="view-profile" class="tab-view hidden space-y-6">
+      
+      <!-- QUICK WEIGH-IN CARD (Moved here for organization too) -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex gap-2">
+        <div class="relative flex-1">
+          <input type="number" step="0.1" id="profileWeightInput" placeholder="TODAY'S WEIGHT" 
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-sm mono focus:outline-none focus:border-emerald-500 uppercase" />
+          <span class="absolute right-3 top-2.5 text-xs text-zinc-500 mono font-bold">LBS</span>
+        </div>
+        <button onclick="saveDailyWeightFromProfile()" class="px-5 bg-zinc-800 hover:bg-emerald-600 hover:text-black border border-zinc-700 font-bold text-xs uppercase tracking-wider rounded-lg transition">
+          Log Mass
+        </button>
+      </div>
+
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
         <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-orange-500"></i> Metabolic Configuration (Mifflin-St Jeor)
+          <i class="fa-solid fa-sliders text-emerald-500"></i> Metabolic Configuration (Mifflin-St Jeor)
         </h2>
 
         <div class="grid grid-cols-2 gap-3">
@@ -266,7 +292,7 @@
           </div>
           <div>
             <label class="text-[10px] font-bold text-zinc-400 uppercase">Gender</label>
-            <select id="bioGender" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono">
+            <select id="bioGender" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono focus:border-emerald-500 focus:outline-none">
               <option value="male">Male (+5)</option>
               <option value="female">Female (-161)</option>
             </select>
@@ -283,7 +309,7 @@
 
         <div>
           <label class="text-[10px] font-bold text-zinc-400 uppercase">Training Days Per Week</label>
-          <select id="bioActivity" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono">
+          <select id="bioActivity" class="w-full mt-1 bg-zinc-950 border border-zinc-800 rounded p-2 text-sm mono focus:border-emerald-500 focus:outline-none">
             <option value="1.2">0 Days (Sedentary)</option>
             <option value="1.375">1 - 2 Days (Light)</option>
             <option value="1.55" selected>3 - 5 Days (Moderate / Lifting)</option>
@@ -291,13 +317,13 @@
           </select>
         </div>
 
-        <button onclick="saveBiometrics()" class="w-full py-2.5 bg-orange-500 hover:bg-orange-400 text-black font-extrabold uppercase rounded-lg text-xs tracking-wider transition">
+        <button onclick="saveBiometrics()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-black font-extrabold uppercase rounded-lg text-xs tracking-wider transition">
           Calculate & Save Biometrics
         </button>
 
         <div class="mt-4 p-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs mono space-y-1">
           <div class="text-zinc-500 uppercase">Calculated Maintenance (TDEE):</div>
-          <div id="tdeeDisplayValue" class="text-xl font-extrabold text-orange-400">-- KCAL / DAY</div>
+          <div id="tdeeDisplayValue" class="text-xl font-extrabold text-emerald-400">-- KCAL / DAY</div>
         </div>
       </div>
     </section>
@@ -311,147 +337,147 @@
       PROFILE: 'iron_profile_v1'
     };
 
-    // 50+ ITEM TACTICAL OFFLINE FOOD DATABASE (per 100g or per standard item)
+    // SPIRITUAL DISCIPLINE VERSES (Paraphrased principles based on Scripture for bodily readiness)
+    const VERSES = [
+      { text: "Like an athlete training for the prize, exercise strict discipline over your body so you are fully prepared for the work God calls you to.", ref: "Principle of 1 Corinthians 9:25-27" },
+      { text: "Physical training holds value, building the endurance and strength needed to serve others and honor God with your temple.", ref: "Principle of 1 Timothy 4:8" },
+      { text: "Discipline in the moment feels difficult, but it yields a harvest of peace, strength, and readiness for those who endure.", ref: "Principle of Hebrews 12:11" },
+      { text: "Equip yourself with strength; make your arms strong for the tasks the Lord has set before you today.", ref: "Principle of Proverbs 31:17" },
+      { text: "Whatever you eat, drink, or train for, do it all to build a capable vessel for the glory of God.", ref: "Principle of 1 Corinthians 10:31" }
+    ];
+
+    // EXPANDED TACTICAL FOOD DATABASE (including Oikos, Rice, etc.)
     const TACTICAL_FOODS = [
-      // Meats & Fish (per 100g)
-      { keys: ['chicken breast', 'chicken'], kcal: 165, p: 31, c: 0, s: 74, perGram: true },
-      { keys: ['chicken thigh'], kcal: 209, p: 26, c: 0, s: 84, perGram: true },
-      { keys: ['ground beef', 'minced beef', 'lean beef'], kcal: 215, p: 26, c: 0, s: 70, perGram: true },
-      { keys: ['steak', 'sirloin', 'ribeye', 'beef'], kcal: 250, p: 26, c: 0, s: 60, perGram: true },
-      { keys: ['salmon'], kcal: 208, p: 20, c: 0, s: 59, perGram: true },
-      { keys: ['tuna', 'canned tuna'], kcal: 130, p: 28, c: 0, s: 350, perGram: true },
-      { keys: ['turkey', 'ground turkey'], kcal: 148, p: 24, c: 0, s: 78, perGram: true },
-      { keys: ['pork', 'pork chop'], kcal: 242, p: 27, c: 0, s: 62, perGram: true },
-      { keys: ['bacon'], kcal: 541, p: 37, c: 1, s: 1717, perGram: true },
-      { keys: ['shrimp', 'prawns'], kcal: 99, p: 24, c: 0, s: 111, perGram: true },
-
-      // Eggs & Dairy
-      { keys: ['egg white', 'egg whites'], kcal: 17, p: 3.6, c: 0.2, s: 55, perItem: true, defaultItemName: 'egg white' },
-      { keys: ['egg', 'eggs'], kcal: 78, p: 6.3, c: 0.6, s: 62, perItem: true, defaultItemName: 'egg' },
-      { keys: ['whey', 'whey protein', 'protein powder'], kcal: 125, p: 24, c: 3, s: 140, perItem: true, defaultItemName: 'scoop (30g)' },
-      { keys: ['greek yogurt'], kcal: 59, p: 10, c: 3.6, s: 36, perGram: true },
-      { keys: ['cottage cheese'], kcal: 98, p: 11, c: 3.4, s: 364, perGram: true },
-      { keys: ['milk', 'whole milk'], kcal: 61, p: 3.2, c: 4.8, s: 43, perGram: true, cupGrams: 240 },
-      { keys: ['cheddar', 'cheese'], kcal: 403, p: 25, c: 1.3, s: 621, perGram: true },
-
-      // Carbs & Grains
-      { keys: ['white rice', 'cooked rice', 'rice'], kcal: 130, p: 2.7, c: 28, s: 1, perGram: true, cupGrams: 158 },
+      { keys: ['oikos triple zero', 'oikos pro', 'oikos yogurt', 'oikos', 'chobani zero sugar', 'chobani', 'fage'], kcal: 100, p: 15, c: 7, s: 45, perItem: true, defaultItemName: 'cup' },
+      { keys: ['fairlife elite', 'core power elite'], kcal: 230, p: 42, c: 8, s: 260, perItem: true, defaultItemName: 'bottle' },
+      { keys: ['whey protein', 'protein powder'], kcal: 125, p: 25, c: 3, s: 140, perItem: true, defaultItemName: 'scoop (30g)' },
+      { keys: ['steamed rice', 'white rice', 'cooked rice', 'jasmine rice', 'rice'], kcal: 130, p: 2.7, c: 28, s: 1, perGram: true, cupGrams: 158 },
       { keys: ['brown rice'], kcal: 111, p: 2.6, c: 23, s: 5, perGram: true, cupGrams: 195 },
       { keys: ['oatmeal', 'oats'], kcal: 389, p: 16.9, c: 66, s: 2, perGram: true, cupGrams: 80 },
-      { keys: ['pasta', 'spaghetti'], kcal: 131, p: 5, c: 25, s: 1, perGram: true, cupGrams: 140 },
-      { keys: ['bread', 'toast', 'white bread'], kcal: 75, p: 2.5, c: 14, s: 130, perItem: true, defaultItemName: 'slice' },
+      { keys: ['bread', 'toast'], kcal: 75, p: 2.5, c: 14, s: 130, perItem: true, defaultItemName: 'slice' },
       { keys: ['bagel'], kcal: 260, p: 10, c: 50, s: 450, perItem: true, defaultItemName: 'bagel' },
-      { keys: ['tortilla', 'wrap'], kcal: 130, p: 3, c: 22, s: 280, perItem: true, defaultItemName: 'tortilla' },
-      { keys: ['potato', 'potatoes', 'baked potato'], kcal: 87, p: 1.9, c: 20, s: 6, perGram: true },
       { keys: ['sweet potato'], kcal: 86, p: 1.6, c: 20, s: 55, perGram: true },
-
-      // Fats & Spreads
+      { keys: ['chicken breast', 'chicken'], kcal: 165, p: 31, c: 0, s: 74, perGram: true },
+      { keys: ['ground beef', 'lean beef', 'beef'], kcal: 215, p: 26, c: 0, s: 70, perGram: true },
+      { keys: ['steak'], kcal: 250, p: 26, c: 0, s: 60, perGram: true },
+      { keys: ['salmon'], kcal: 208, p: 20, c: 0, s: 59, perGram: true },
+      { keys: ['egg white', 'egg whites'], kcal: 17, p: 3.6, c: 0.2, s: 55, perItem: true, defaultItemName: 'egg white' },
+      { keys: ['egg', 'eggs'], kcal: 78, p: 6.3, c: 0.6, s: 62, perItem: true, defaultItemName: 'egg' },
       { keys: ['peanut butter', 'pb'], kcal: 588, p: 25, c: 20, s: 430, perGram: true, tbspGrams: 16 },
-      { keys: ['almond butter'], kcal: 614, p: 21, c: 19, s: 7, perGram: true, tbspGrams: 16 },
       { keys: ['olive oil', 'oil'], kcal: 884, p: 0, c: 0, s: 2, perGram: true, tbspGrams: 14 },
-      { keys: ['butter'], kcal: 717, p: 0.9, c: 0.1, s: 643, perGram: true, tbspGrams: 14 },
-      { keys: ['almonds'], kcal: 579, p: 21, c: 22, s: 1, perGram: true },
-      { keys: ['avocado'], kcal: 160, p: 2, c: 8.5, s: 7, perItem: true, defaultItemName: 'avocado' },
-
-      // Fruits & Vegetables
       { keys: ['banana'], kcal: 105, p: 1.3, c: 27, s: 1, perItem: true, defaultItemName: 'banana' },
       { keys: ['apple'], kcal: 95, p: 0.5, c: 25, s: 2, perItem: true, defaultItemName: 'apple' },
-      { keys: ['blueberries', 'berries'], kcal: 57, p: 0.7, c: 14, s: 1, perGram: true, cupGrams: 148 },
       { keys: ['broccoli'], kcal: 34, p: 2.8, c: 7, s: 33, perGram: true },
       { keys: ['spinach'], kcal: 23, p: 2.9, c: 3.6, s: 79, perGram: true }
     ];
 
-    function getTodayString() {
-      return new Date().toISOString().split('T')[0];
-    }
+    function getTodayString() { return new Date().toISOString().split('T')[0]; }
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-orange-500', 'text-black', 'font-extrabold');
+        btn.classList.remove('bg-emerald-600', 'text-black', 'font-extrabold');
         btn.classList.add('text-zinc-400');
       });
 
       document.getElementById('view-' + tabId).classList.remove('hidden');
       const activeBtn = document.getElementById('tab-' + tabId);
       activeBtn.classList.remove('text-zinc-400');
-      activeBtn.classList.add('bg-orange-500', 'text-black', 'font-extrabold');
+      activeBtn.classList.add('bg-emerald-600', 'text-black', 'font-extrabold');
 
-      if (tabId === 'daily') renderDailyReport();
-      if (tabId === 'weekly') renderWeeklyIntel();
+      if (tabId === 'history') {
+        document.getElementById('historyDateSelect').value = getTodayString();
+        renderHistoryTab();
+      }
     }
 
-    // OFFLINE AUTOFILL PARSER
+    // ADVANCED PARSER (Extracts exact macros directly from text, e.g. "15g protein")
     function autofillMacros() {
       const rawInput = document.getElementById('foodSearchInput').value.trim().toLowerCase();
       const status = document.getElementById('searchStatus');
       if (!rawInput) return;
 
-      status.innerText = "PROCESSING NUTRITION INTEL...";
-
-      // Find matching food
       let matchedFood = null;
+      let matchedKey = '';
+
       for (const item of TACTICAL_FOODS) {
-        if (item.keys.some(k => rawInput.includes(k))) {
-          matchedFood = item;
-          break;
+        for (const key of item.keys) {
+          if (rawInput.includes(key)) {
+            if (!matchedFood || key.length > matchedKey.length) {
+              matchedFood = item;
+              matchedKey = key;
+            }
+          }
         }
       }
 
-      if (!matchedFood) {
-        status.innerHTML = `<span class="text-amber-400">ITEM NOT FOUND. PLEASE ENTER MACROS MANUALLY BELOW.</span>`;
+      // Check for explicit user overrides in the string (e.g., "15g protein", "200 kcals")
+      const explicitProteinMatch = rawInput.match(/(\d+)\s*g\s*pro/);
+      const explicitCarbsMatch = rawInput.match(/(\d+)\s*g\s*carb/);
+      const explicitKcalMatch = rawInput.match(/(\d+)\s*kcal/) || rawInput.match(/(\d+)\s*cal/);
+
+      if (!matchedFood && !explicitProteinMatch && !explicitKcalMatch) {
+        status.innerHTML = `<span class="text-amber-400 font-bold">⚠️ RATION NOT RECOGNIZED. ENTER VALUES MANUALLY BELOW.</span>`;
         return;
       }
 
-      // Quantity extraction
-      let grams = 100; // default for weighed items
-      let items = 1;   // default for itemized foods
+      let grams = 100;
+      let items = 1;
 
-      const numMatch = rawInput.match(/(\d+(\.\d+)?)/);
-      const parsedNum = numMatch ? parseFloat(numMatch[0]) : null;
+      const numMatch = rawInput.match(/^(\d+(\.\d+)?)/); // only match numbers at the start of the string for quantity
+      const parsedNum = numMatch ? parseFloat(numMatch[0]) : 1;
 
-      // Unit check
-      if (rawInput.includes('oz') || rawInput.includes('ounce')) {
-        grams = (parsedNum || 4) * 28.35;
-      } else if (rawInput.includes('cup') && matchedFood.cupGrams) {
-        grams = (parsedNum || 1) * matchedFood.cupGrams;
-      } else if ((rawInput.includes('tbsp') || rawInput.includes('tablespoon')) && matchedFood.tbspGrams) {
-        grams = (parsedNum || 1) * matchedFood.tbspGrams;
-      } else if (rawInput.includes('g') || rawInput.includes('gram')) {
-        grams = parsedNum || 100;
-      } else if (parsedNum) {
-        // Number provided without explicit unit
-        if (matchedFood.perItem) {
-          items = parsedNum;
+      if (matchedFood) {
+        if (rawInput.includes('oz') || rawInput.includes('ounce')) {
+          grams = parsedNum * 28.35;
+        } else if (rawInput.includes('cup') && matchedFood.cupGrams) {
+          grams = parsedNum * matchedFood.cupGrams;
+        } else if ((rawInput.includes('tbsp') || rawInput.includes('tablespoon')) && matchedFood.tbspGrams) {
+          grams = parsedNum * matchedFood.tbspGrams;
+        } else if (rawInput.includes('g ') || rawInput.endsWith('g')) { // catch "200g" but not "15g protein"
+           const possibleGrams = rawInput.match(/^(\d+)g/);
+           if(possibleGrams) grams = parseFloat(possibleGrams[1]);
         } else {
-          // If number is small (< 10), assume items or ounces
-          grams = parsedNum <= 16 ? parsedNum * 28.35 : parsedNum;
+          if (matchedFood.perItem) items = parsedNum;
+          else grams = parsedNum <= 16 ? parsedNum * 28.35 : parsedNum; // Assume oz if small number, else grams
         }
       }
 
-      let finalKcal, finalP, finalC, finalS, labelText;
+      let finalKcal = 0, finalP = 0, finalC = 0, finalS = 0;
+      let labelText = "Custom Entry";
 
-      if (matchedFood.perItem) {
-        finalKcal = Math.round(matchedFood.kcal * items);
-        finalP = Math.round(matchedFood.p * items);
-        finalC = Math.round(matchedFood.c * items);
-        finalS = Math.round(matchedFood.s * items);
-        labelText = `${items} ${matchedFood.defaultItemName || 'serving'}`;
-      } else {
-        const factor = grams / 100;
-        finalKcal = Math.round(matchedFood.kcal * factor);
-        finalP = Math.round(matchedFood.p * factor);
-        finalC = Math.round(matchedFood.c * factor);
-        finalS = Math.round(matchedFood.s * factor);
-        labelText = `${Math.round(grams)}g (${(grams / 28.35).toFixed(1)} oz)`;
+      if (matchedFood) {
+        if (matchedFood.perItem) {
+          finalKcal = Math.round(matchedFood.kcal * items);
+          finalP = Math.round(matchedFood.p * items);
+          finalC = Math.round(matchedFood.c * items);
+          finalS = Math.round(matchedFood.s * items);
+          labelText = `${items} ${matchedFood.defaultItemName || 'serving'}`;
+        } else {
+          const factor = grams / 100;
+          finalKcal = Math.round(matchedFood.kcal * factor);
+          finalP = Math.round(matchedFood.p * factor);
+          finalC = Math.round(matchedFood.c * factor);
+          finalS = Math.round(matchedFood.s * factor);
+          labelText = `${Math.round(grams)}g`;
+        }
       }
+
+      // Apply Explicit Overrides (If user typed "1 oikos 15g protein", replace the protein value)
+      if (explicitProteinMatch) finalP = parseInt(explicitProteinMatch[1]);
+      if (explicitCarbsMatch) finalC = parseInt(explicitCarbsMatch[1]);
+      if (explicitKcalMatch) finalKcal = parseInt(explicitKcalMatch[1]);
 
       document.getElementById('inputKcal').value = finalKcal;
       document.getElementById('inputProtein').value = finalP;
       document.getElementById('inputCarbs').value = finalC;
       document.getElementById('inputSodium').value = finalS;
 
-      status.innerHTML = `<span class="text-orange-400 font-bold">✓ AUTO-FILLED: ${matchedFood.keys[0].toUpperCase()} [${labelText}]</span>`;
+      if(matchedFood) {
+        status.innerHTML = `<span class="text-emerald-400 font-bold">✓ PARSED: ${matchedKey.toUpperCase()} [${labelText}] ${explicitProteinMatch ? '(Custom Macros Applied)' : ''}</span>`;
+      } else {
+        status.innerHTML = `<span class="text-emerald-400 font-bold">✓ CUSTOM MACROS EXTRACTED DIRECTLY FROM TEXT.</span>`;
+      }
     }
 
     function commitMealEntry() {
@@ -486,24 +512,24 @@
       document.getElementById('inputSodium').value = '';
       document.getElementById('searchStatus').innerText = '';
 
-      renderLoggedEntries();
+      renderLogTab();
     }
 
     function deleteMeal(id) {
       let meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
       meals = meals.filter(m => m.id !== id);
       localStorage.setItem(DB_KEYS.MEALS, JSON.stringify(meals));
-      renderLoggedEntries();
+      renderLogTab();
+      renderHistoryTab(); // Update history if open
     }
 
-    function renderLoggedEntries() {
+    function renderLogTab() {
       const today = getTodayString();
       const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
       const todaysMeals = meals.filter(m => m.date === today);
 
       const listContainer = document.getElementById('loggedEntriesList');
-      const countBadge = document.getElementById('logCountBadge');
-      countBadge.innerText = `${todaysMeals.length} ENTRIES`;
+      document.getElementById('logCountBadge').innerText = `${todaysMeals.length} ENTRIES`;
 
       if (todaysMeals.length === 0) {
         listContainer.innerHTML = `<div class="p-4 text-center text-xs text-zinc-600 border border-zinc-900 rounded-lg">NO RATIONS LOGGED TODAY</div>`;
@@ -511,81 +537,82 @@
       }
 
       listContainer.innerHTML = todaysMeals.map(m => `
-        <div class="bg-zinc-900/60 border border-zinc-800/80 p-3 rounded-lg flex items-center justify-between">
+        <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex items-center justify-between">
           <div class="space-y-0.5">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-orange-400 font-bold uppercase rounded">${m.mealType}</span>
-              <span class="text-sm font-bold uppercase text-zinc-200">${m.foodName}</span>
+              <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-emerald-400 font-bold uppercase rounded">${m.mealType}</span>
+              <span class="text-xs font-bold uppercase text-zinc-200">${m.foodName}</span>
             </div>
-            <div class="text-xs mono text-zinc-500">
-              <span class="text-orange-400 font-bold">${m.kcal} kcal</span> | P: ${m.protein}g | C: ${m.carbs}g | Na: ${m.sodium}mg
+            <div class="text-[10px] mono text-zinc-500">
+              <span class="text-emerald-400 font-bold">${m.kcal} kcal</span> | P:${m.protein}g | C:${m.carbs}g
             </div>
           </div>
-          <button onclick="deleteMeal('${m.id}')" class="text-zinc-600 hover:text-red-500 p-2 transition">
+          <button onclick="deleteMeal('${m.id}')" class="text-zinc-600 hover:text-red-500 px-2 transition">
             <i class="fa-solid fa-trash-can text-xs"></i>
           </button>
         </div>
       `).join('');
     }
 
-    function renderDailyReport() {
-      const today = getTodayString();
-      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]').filter(m => m.date === today);
+    // REAL-TIME HISTORY TAB ENGINE
+    function renderHistoryTab() {
+      const selectedDate = document.getElementById('historyDateSelect').value;
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      const dateMeals = meals.filter(m => m.date === selectedDate);
+      
       const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
       const tdee = profile.tdee || 2500;
+      document.getElementById('historyTdeeDisplay').innerText = `TARGET: ${tdee} KCAL`;
 
-      document.getElementById('dailyDateHeader').innerText = today;
-      document.getElementById('dailyTdeeGoal').innerText = tdee;
+      // Totals
+      const totalKcal = dateMeals.reduce((s, m) => s + m.kcal, 0);
+      const totalP = dateMeals.reduce((s, m) => s + m.protein, 0);
+      const totalC = dateMeals.reduce((s, m) => s + m.carbs, 0);
+      const totalS = dateMeals.reduce((s, m) => s + m.sodium, 0);
 
-      const totalKcal = meals.reduce((sum, m) => sum + m.kcal, 0);
-      const totalP = meals.reduce((sum, m) => sum + m.protein, 0);
-      const totalC = meals.reduce((sum, m) => sum + m.carbs, 0);
-      const totalS = meals.reduce((sum, m) => sum + m.sodium, 0);
-
-      document.getElementById('dailyKcalVal').innerText = totalKcal;
-      document.getElementById('dailyProteinVal').innerHTML = `${totalP}<span class="text-xs">g</span>`;
-      document.getElementById('dailyCarbsVal').innerHTML = `${totalC}<span class="text-xs">g</span>`;
-      document.getElementById('dailySodiumVal').innerHTML = `${totalS}<span class="text-xs">mg</span>`;
+      document.getElementById('historyTotalKcal').innerText = totalKcal;
+      document.getElementById('historyTotalProtein').innerHTML = `${totalP}<span class="text-xs">g</span>`;
+      document.getElementById('historyTotalCarbs').innerHTML = `${totalC}<span class="text-xs">g</span>`;
+      document.getElementById('historyTotalSodium').innerHTML = `${totalS}<span class="text-xs">mg</span>`;
 
       const pct = Math.min(100, Math.round((totalKcal / tdee) * 100));
-      document.getElementById('dailyKcalBar').style.width = `${pct}%`;
+      document.getElementById('historyKcalBar').style.width = `${pct}%`;
 
-      const types = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
-      const distContainer = document.getElementById('mealDistributionList');
-      distContainer.innerHTML = types.map(t => {
-        const filtered = meals.filter(m => m.mealType === t);
-        const k = filtered.reduce((s, m) => s + m.kcal, 0);
-        return `
-          <div class="flex items-center justify-between text-xs mono bg-zinc-950 p-2.5 rounded border border-zinc-900">
-            <span class="font-bold text-zinc-300 uppercase">${t}</span>
-            <span class="text-orange-400 font-bold">${k} KCAL</span>
+      // Log List
+      const logContainer = document.getElementById('historyLogList');
+      if (dateMeals.length === 0) {
+        logContainer.innerHTML = `<div class="p-4 text-center text-xs text-zinc-600 border border-zinc-900 rounded-lg">NO DATA FOUND FOR THIS DATE</div>`;
+      } else {
+        logContainer.innerHTML = dateMeals.map(m => `
+          <div class="bg-zinc-950 border border-zinc-800 p-2.5 rounded flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-emerald-500 font-bold uppercase">${m.mealType}</div>
+              <div class="text-xs text-zinc-200 font-bold uppercase">${m.foodName}</div>
+            </div>
+            <div class="text-right text-[10px] mono text-zinc-400">
+              <span class="text-emerald-400 font-bold">${m.kcal} kcal</span><br>
+              P:${m.protein}g | C:${m.carbs}g | Na:${m.sodium}
+            </div>
           </div>
-        `;
-      }).join('');
-    }
+        `).join('');
+      }
 
-    function renderWeeklyIntel() {
-      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
-      const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
-      const dailyTdee = profile.tdee || 2500;
-      const weeklyTdee = dailyTdee * 7;
-
+      // Weekly Summary list
       const days = [];
       for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
         days.push(d.toISOString().split('T')[0]);
       }
-
-      let total7DayConsumed = 0;
-      const historyHtml = days.map(dateStr => {
+      
+      document.getElementById('weeklyHistoryList').innerHTML = days.map(dateStr => {
         const dayMeals = meals.filter(m => m.date === dateStr);
         const dayKcal = dayMeals.reduce((s, m) => s + m.kcal, 0);
-        total7DayConsumed += dayKcal;
-        const diff = dayKcal - dailyTdee;
-        const diffColor = diff > 0 ? 'text-orange-400' : 'text-emerald-400';
+        const diff = dayKcal - tdee;
+        const diffColor = diff > 0 ? 'text-amber-500' : 'text-emerald-400';
+        const isSelected = dateStr === selectedDate ? 'bg-zinc-800 p-1 rounded' : '';
         return `
-          <div class="flex justify-between items-center py-1.5 border-b border-zinc-900">
+          <div class="flex justify-between items-center py-1.5 border-b border-zinc-900 ${isSelected}">
             <span class="text-zinc-400">${dateStr}</span>
             <div class="space-x-3">
               <span class="text-zinc-200 font-bold">${dayKcal} KCAL</span>
@@ -594,35 +621,68 @@
           </div>
         `;
       }).join('');
-
-      document.getElementById('weeklyHistoryList').innerHTML = historyHtml;
-
-      const netBalance = total7DayConsumed - weeklyTdee;
-      const lbsShift = (netBalance / 3500).toFixed(2);
-
-      document.getElementById('weeklyNetKcal').innerText = `${netBalance > 0 ? '+' : ''}${netBalance} KCAL`;
-      
-      const badge = document.getElementById('weeklyStatusBadge');
-      const massShiftEl = document.getElementById('weeklyMassShift');
-      const desc = document.getElementById('weeklyIntelDesc');
-
-      if (netBalance < 0) {
-        badge.innerText = "CALORIC DEFICIT";
-        badge.className = "text-xs mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
-        massShiftEl.className = "text-2xl font-black mono text-emerald-400 mt-1";
-        massShiftEl.innerText = `${lbsShift} LBS`;
-        desc.innerText = `You burned ${Math.abs(netBalance)} kcal more than maintenance over 7 days. Estimated fat loss: ${Math.abs(lbsShift)} lbs.`;
-      } else {
-        badge.innerText = "CALORIC SURPLUS";
-        badge.className = "text-xs mono font-bold px-2 py-0.5 rounded bg-orange-950 text-orange-400 border border-orange-800";
-        massShiftEl.className = "text-2xl font-black mono text-orange-400 mt-1";
-        massShiftEl.innerText = `+${lbsShift} LBS`;
-        desc.innerText = `You consumed ${netBalance} kcal over maintenance over 7 days. Estimated mass increase: +${lbsShift} lbs.`;
-      }
     }
 
+    // TACTICAL DIET COACH ALGORITHM
+    function runDietAnalysis() {
+      document.getElementById('coachResultsArea').classList.remove('hidden');
+      const meals = JSON.parse(localStorage.getItem(DB_KEYS.MEALS) || '[]');
+      const profile = JSON.parse(localStorage.getItem(DB_KEYS.PROFILE) || '{}');
+      const targetWeight = profile.weightLbs || 180;
+      
+      const today = getTodayString();
+      const todaysMeals = meals.filter(m => m.date === today);
+      
+      const totalP = todaysMeals.reduce((s, m) => s + m.protein, 0);
+      const totalS = todaysMeals.reduce((s, m) => s + m.sodium, 0);
+
+      const replacements = [];
+      const suggestions = [];
+
+      // Protein Check
+      if (totalP < (targetWeight * 0.8)) {
+        replacements.push(`<li><i class="fa-solid fa-arrow-right text-emerald-500 mr-2"></i><strong>Low Protein Detected:</strong> You are under 0.8g per lb of body weight today. Replace high-carb snacks with Greek Yogurt, Whey Protein, or Canned Tuna.</li>`);
+        suggestions.push(`<li><i class="fa-solid fa-check text-emerald-500 mr-2"></i><strong>High-Yield Protocol:</strong> Mix 1 scoop Whey Protein into 1 cup Oatmeal. (Yields ~40g Protein)</li>`);
+      } else {
+        replacements.push(`<li><i class="fa-solid fa-check-circle text-emerald-500 mr-2"></i><strong>Protein Optimal:</strong> You are hitting strong protein targets for tissue repair.</li>`);
+      }
+
+      // Sodium Check
+      if (totalS > 2500) {
+        replacements.push(`<li><i class="fa-solid fa-arrow-right text-amber-500 mr-2"></i><strong>High Sodium Alert:</strong> Excess sodium (${totalS}mg) causes water retention and higher blood pressure. Check your condiments and processed meats.</li>`);
+      }
+
+      // Food Replacement Scans
+      let foundBagel = false, foundBacon = false, foundCereal = false;
+      todaysMeals.forEach(m => {
+        const n = m.foodName.toLowerCase();
+        if(n.includes('bagel') && !foundBagel) { foundBagel=true; replacements.push(`<li><i class="fa-solid fa-arrow-right text-emerald-500 mr-2"></i>Swap your <strong>Bagel</strong> for 2 slices of whole wheat toast to save ~100 kcals and 20g carbs.</li>`);}
+        if(n.includes('bacon') && !foundBacon) { foundBacon=true; replacements.push(`<li><i class="fa-solid fa-arrow-right text-emerald-500 mr-2"></i>Swap <strong>Bacon</strong> for Turkey Bacon or Egg Whites to reduce saturated fats while preserving protein.</li>`);}
+      });
+
+      if(replacements.length === 1 && replacements[0].includes("Protein Optimal")) {
+        replacements.push(`<li><i class="fa-solid fa-arrow-right text-emerald-500 mr-2"></i>Your current diet structure is solid. Keep hydrating and adhering to the macros.</li>`);
+      }
+
+      suggestions.push(`<li><i class="fa-solid fa-check text-emerald-500 mr-2"></i><strong>Quick Lean Dinner:</strong> 200g Chicken Breast, 1 Cup Jasmine Rice, 1 Cup Broccoli. (High volume, high protein)</li>`);
+      suggestions.push(`<li><i class="fa-solid fa-check text-emerald-500 mr-2"></i><strong>Pre-Training Fuel:</strong> 1 Banana + 1 Fairlife Elite Core Power. (Fast digesting carbs + immediate amino acids)</li>`);
+
+      document.getElementById('coachReplacements').innerHTML = replacements.join('');
+      document.getElementById('coachMenuIdeas').innerHTML = suggestions.join('');
+    }
+
+    // PROFILE & BIOMETRICS
     function saveDailyWeight() {
       const val = parseFloat(document.getElementById('dailyWeightInput').value);
+      if (!val) return;
+      const weights = JSON.parse(localStorage.getItem(DB_KEYS.WEIGHTS) || '{}');
+      weights[getTodayString()] = val;
+      localStorage.setItem(DB_KEYS.WEIGHTS, JSON.stringify(weights));
+      alert(`WEIGHT LOGGED: ${val} LBS`);
+    }
+
+    function saveDailyWeightFromProfile() {
+      const val = parseFloat(document.getElementById('profileWeightInput').value);
       if (!val) return;
       const weights = JSON.parse(localStorage.getItem(DB_KEYS.WEIGHTS) || '{}');
       weights[getTodayString()] = val;
@@ -665,10 +725,24 @@
       }
     }
 
+    // Set Daily Verse based on day of the year
+    function setDailyVerse() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      
+      const verseIndex = dayOfYear % VERSES.length;
+      document.getElementById('verseText').innerText = `"${VERSES[verseIndex].text}"`;
+      document.getElementById('verseRef').innerText = `- ${VERSES[verseIndex].ref}`;
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('currentDateLabel').innerText = getTodayString();
+      setDailyVerse();
+      if(document.getElementById('currentDateLabel')) document.getElementById('currentDateLabel').innerText = getTodayString();
       loadProfile();
-      renderLoggedEntries();
+      renderLogTab();
     });
   </script>
 </body>
